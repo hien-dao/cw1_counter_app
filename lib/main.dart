@@ -62,6 +62,20 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     setState(() => _counter = 0);
   }
 
+  Color _counterColor() {
+    if (_counter == 0) return Colors.grey;
+
+    // Clamp intensity between 0.2 and 1.0
+    double intensity = (_counter.abs() / 50).clamp(0.2, 1.0);
+
+    if (_counter > 0) {
+      return Color.lerp(Colors.green.shade200, Colors.green.shade900, intensity)!;
+    } else {
+      return Color.lerp(Colors.red.shade200, Colors.red.shade900, intensity)!;
+    }
+  }
+
+
   void _toggleTheme() {
     setState(() => _isDark = !_isDark);
   }
@@ -97,7 +111,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             children: [
               Text(
                 'Counter: $_counter',
-                style: Theme.of(context).textTheme.headlineMedium,
+                style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                      color: _counterColor(),
+                    ),
               ),
               const SizedBox(height: 12),
               Slider(
@@ -131,14 +147,28 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 ]
               ),
               const SizedBox(height: 24),
-              FadeTransition(
-                opacity: _fade,
-                child: Image.asset(
-                  _isFirstImage ? 'assets/image1.png' : 'assets/image2.png',
-                  width: 180,
-                  height: 180,
-                  fit: BoxFit.cover,
-                ),
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  // Cat image display first
+                  Image.asset(
+                    'assets/cat.jpg',
+                    width: 180,
+                    height: 180,
+                    fit: BoxFit.cover,
+                  ),
+
+                  // Dog image fades in/out on top of cat
+                  ScaleTransition(
+                    scale: _fade,
+                    child: Image.asset(
+                      'assets/dog.jpg',
+                      width: 180,
+                      height: 180,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 12),
               ElevatedButton(
@@ -152,3 +182,4 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     );
   }
 }
+
