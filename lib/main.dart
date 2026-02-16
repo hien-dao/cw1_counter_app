@@ -27,6 +27,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   int _counter = 0;
+  double _incrementValue = 1;
   bool _isDark = false;
   bool _isFirstImage = true;
 
@@ -50,7 +51,15 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   }
 
   void _incrementCounter() {
-    setState(() => _counter++);
+    setState(() => _counter += _incrementValue.toInt());
+  }
+
+  void _decrementCounter() {
+    setState(() => _counter -= _incrementValue.toInt());
+  }
+
+  void _resetCounter() {
+    setState(() => _counter = 0);
   }
 
   void _toggleTheme() {
@@ -91,9 +100,35 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
               const SizedBox(height: 12),
-              ElevatedButton(
-                onPressed: _incrementCounter,
-                child: const Text('Increment'),
+              Slider(
+                value: _incrementValue,
+                min: 1,
+                max: 10,
+                divisions: 9,
+                label: '$_incrementValue',
+                onChanged: (double value) {
+                  setState(() {
+                    _incrementValue = value;
+                  });
+                },
+              ),
+              const SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: _incrementCounter,
+                    child: const Text('Increase'),
+                  ),
+                  ElevatedButton(
+                    onPressed: _decrementCounter,
+                    child: const Text('Decrease')
+                  ),
+                  ElevatedButton(
+                    onPressed: _resetCounter,
+                    child: const Text('Reset')
+                  ,)
+                ]
               ),
               const SizedBox(height: 24),
               FadeTransition(
